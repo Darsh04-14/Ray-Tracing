@@ -78,7 +78,7 @@ void camera::render(const hittable& world) {
   std::vector<std::vector<color>> pixel_values(image_height, std::vector<color>(image_width));
   auto t1 = std::chrono::high_resolution_clock::now();
 
-  auto write_scanline = [&](int j) {
+  auto get_scanline = [&](int j) {
     for (int i = 0; i < image_width; i++) {
       color pixel_color(0,0,0);
       for (int sample = 0; sample < samples_per_pixel; ++sample) {
@@ -89,7 +89,7 @@ void camera::render(const hittable& world) {
     }
   };
 
-  for (int j = 0; j < image_height; ++j) threads[j] = std::thread(write_scanline, j);
+  for (int j = 0; j < image_height; ++j) threads[j] = std::thread(get_scanline, j);
 
   for (int j = 0; j < image_height; ++j) {
     if (threads[j].joinable())
